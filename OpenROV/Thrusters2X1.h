@@ -21,6 +21,8 @@ class Thrusters : public Device {
     Thrusters():Device(){};
     void device_setup();
     void device_loop(Command cmd);
+  private:
+  	int smoothMotorMS(int current, int target);
 };
 #endif
 #endif

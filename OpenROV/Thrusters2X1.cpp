@@ -198,9 +198,9 @@ void Thrusters::device_loop(Command command){
   //the pilot could have more aggressive response profiles for the ROV.
   if (controltime.elapsed (50)) {
     if (p!=new_p || v!=new_v || s!=new_s) {
-      new_p = p;
-      new_v = v;
-      new_s = s;
+      new_p = this->smoothMotorMS(new_p,p);
+      new_v = this->smoothMotorMS(new_v,v);
+      new_s = this->smoothMotorMS(new_s,s);
       Serial.print(F("motors:"));
       Serial.print(port_motor.goms(new_p));
       Serial.print(',');
@@ -239,4 +239,12 @@ void Thrusters::device_loop(Command command){
     Serial.println (";");
   }
 }
+
+int Thrusters::smoothMotorMS(int current, int target){
+  int x = target - current;
+  int sign = (x>0) - (x<0);
+  int adjustedVal = current + sign * (min(abs(target - current),20));
+  return (adjustedVal);
+}
+
 #endif
